@@ -5,6 +5,10 @@
     --c--secondary: 255, 237, 101; /* #FFED65 */
     --c--tertiary: 218, 192, 163; /* DAC0A3 */
     --c--text: 16, 44, 87; /* 102C57 */
+    --c--stamp--circle: 106, 71, 166; /* #102C57 */
+    --c--stamp--triangle: 120, 204, 203; /* #78CCCB */
+    --c--stamp--square: 78, 173, 13; /* #4EAD0D */
+    --c--stamp--heart: 246, 95, 48; /* #F65F30 */
 
     --font-size--h1: 3.052rem;
     --font-size--h2: 2.441rem;
@@ -18,6 +22,7 @@
 
     --flip--width: 500px;
     --flip--height: 10rem;
+    --img--stamp: url('./img/stamp--circle.svg');
 }
 /* Reset */
 * {
@@ -88,26 +93,80 @@ body {
     align-items: center;
 }
 .sketch-board {
+    --width--sketch: 80%;
     width: 80%;
     max-height: 100%;
     aspect-ratio: 4/3;
-    padding: 5%;
+    padding: 2.5% 5%;
     background-color: rgb(var(--c--main));
     display: flex;
     flex-wrap: wrap;
     align-items: center;
 }
-.sketch-board__stamp__ctr {
-
+.sketch-board__frame {
+    width: 100%;
+    height: 100%;
+    padding: 2%;
+    background-color: rgb(var(--c--secondary));
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
 }
+/*  Stamps */
+.sketch-board__stamp__ctr {
+    width: calc((100% - var(--width--sketch)) / 2);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.sketch-board__stamp {
+    --stamp--width: 90%;
+    --stamp--color: rgb(0,0,0);
+    width: var(--stamp--width);
+    margin: calc(var(--stamp--width) / 8) calc((100% - var(--stamp--width)) / 2);
+    aspect-ratio: 1;
+    mask: var(--img--stamp);
+    -webkit-mask: var(--img--stamp);
+    mask-size: cover;
+    -webkit-mask-size: contain;
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+    background-color: var(--stamp--color);
+}
+.circle {
+    --img--stamp: url('img/stamp--circle.svg');
+    --stamp--color: rgb(var(--c--stamp--circle));
+}
+.triangle {
+    --img--stamp: url('img/stamp--triangle.svg');
+    --stamp--color: rgb(var(--c--stamp--triangle));
+}
+.square {
+    --img--stamp: url('img/stamp--square.svg');
+    --stamp--color: rgb(var(--c--stamp--square));
+}
+.heart {
+    --img--stamp: url('img/stamp--heart.svg');
+    --stamp--color: rgb(var(--c--stamp--heart));
+}
+/*  Sketch */
 .sketch-board__sketch {
-    width: 80%;
-    height: 90%;
+    width: var(--width--sketch);
+    height: 80%;
     background-color: rgb(var(--c--bg));
 }
+/*  Sketch Option */
 .sketch-board__option {
-
+    width: calc((100% - var(--width--sketch)) / 2);
 }
+/*  Sketch Eraser */
 .sketch-board__eraser {
+    position: relative;
     width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.eraser {
+    width: var(--width--sketch);
 }
