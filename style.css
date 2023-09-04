@@ -1,0 +1,113 @@
+:root {
+    color-scheme: normal;
+    --c--bg: 255, 255, 255; 
+    --c--main: 120, 204, 203; /* #78CCCB */
+    --c--secondary: 255, 237, 101; /* #FFED65 */
+    --c--tertiary: 218, 192, 163; /* DAC0A3 */
+    --c--text: 16, 44, 87; /* 102C57 */
+
+    --font-size--h1: 3.052rem;
+    --font-size--h2: 2.441rem;
+    --font-size--h3: 1.953rem;
+    --font-size--h4: 1.543rem;
+    --font-size--h5: 1.24rem;
+    --font-size--p: 1rem;
+
+    --font-weight--light: 300;
+    --font-weight--bold: 800;
+
+    --flip--width: 500px;
+    --flip--height: 10rem;
+}
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+button {
+    border: none;
+    background-color: none;
+}
+h1 {
+    font-size: var(--font-size--h1);
+    font-weight: var(--font-weight--bold);
+}
+h2 {
+    font-size: var(--font-size--h2);
+    font-weight: var(--font-weight--bold);
+}
+h3 {
+    font-size: var(--font-size--h3);
+    font-weight: var(--font-weight--bold);
+}
+h4 {
+    font-size: var(--font-size--h4);
+    font-weight: var(--font-weight--bold);
+}
+h5 {
+    font-size: var(--font-size--h5);
+    font-weight: var(--font-weight--bold);
+}
+h1::first-letter,
+h2::first-letter,
+h3::first-letter,
+h4::first-letter,
+h5::first-letter {
+    text-transform: uppercase;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgb(var(--c--bg));
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
+    color: rgb(var(--c--text));
+}
+.title {
+    width: 100%;
+    height: calc(var(--font-size--h1) * 2);
+    padding: calc(var(--font-size--h1) / 2) 0;
+    line-height: var(--font-size--h1);
+    text-align: center;
+    flex: 0 0 auto;
+}
+
+/* Sketch Board */
+.sketch-board__ctr {
+    width: 100%;
+    height: calc(100vh - var(--font-size--h1) * 3);
+    margin: calc(var(--font-size--h1) / 2) 0;
+    flex: 1 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.sketch-board {
+    width: 80%;
+    max-height: 100%;
+    aspect-ratio: 4/3;
+    padding: 5%;
+    background-color: rgb(var(--c--main));
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.sketch-board__stamp__ctr {
+
+}
+.sketch-board__sketch {
+    width: 80%;
+    height: 90%;
+    background-color: rgb(var(--c--bg));
+}
+.sketch-board__option {
+
+}
+.sketch-board__eraser {
+    width: 100%;
+}
