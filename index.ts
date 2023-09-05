@@ -155,5 +155,13 @@ const sketchDiv = document.querySelector('#sketch') as HTMLElement;
 if(!sketchDiv) {
     throw new Error('div for sketch is not found');
 }
+//initialize sketch
 const sketch = new Sketch(sketchDiv);
 sketch.initBoxes();
+
+window.addEventListener('resize', () => {
+    sketch.deleteAllBox();
+    sketch.initBoxes();
+});
+
+
