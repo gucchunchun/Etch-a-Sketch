@@ -42,7 +42,8 @@ class Box {
         for(const name of this._classList) {
             self.classList.add(name);
         }
-        self.style.width = this._width + '%';
+        self.style.width = this._width + 'px';
+        self.style.height = this._width + 'px';
         self.style.backgroundColor = `rgba(${this._color[ColorOption.Red]}, ${this._color[ColorOption.Green]},${this._color[ColorOption.Blue]},${this._color[ColorOption.Alfa]})`;
         self.addEventListener('mousedown', () =>{
             //some function to change color with specified color
@@ -54,7 +55,6 @@ class Box {
         }
         this.self = self;
     }
-
     update(updateFeature:Partial<Omit<BoxFeature, 'sketch'>>) {
         let box = this.self
         if(!box) {
@@ -104,13 +104,17 @@ class Sketch {
     initBoxes() {
         const sketchWidth = this._self.clientWidth;
         const sketchHeight = this._self.clientHeight;
-        const row = this._boxWidth / sketchWidth;
-        const col = this._boxWidth / sketchHeight;
+        const row = Math.ceil(sketchWidth / this._boxWidth);
+        const col = Math.ceil(sketchHeight / this._boxWidth);   
+        this._self.style.gridTemplateColumns
+            = `repeat(${row}, ${this._boxWidth}px)`;
+        this._self.style.gridTemplateRows
+            = `repeat(${col}, ${this._boxWidth}px)`;
 
-        for (let i = 0; i < row; i++) {
+        for (let i = 0; i < row ; i++) {
             this._boxes.push([]);
             for (let j = 0; j < col; j++) {
-                const box = new Box(this._self, this._boxWidth);
+                const box = new Box(this._self, this._boxWidth, undefined, ['border']);
                 box.add();
                 this._boxes[i].push(box);
             }
@@ -146,3 +150,10 @@ class Sketch {
     }
 
 }
+
+const sketchDiv = document.querySelector('#sketch') as HTMLElement;
+if(!sketchDiv) {
+    throw new Error('div for sketch is not found');
+}
+const sketch = new Sketch(sketchDiv);
+sketch.initBoxes();

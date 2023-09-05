@@ -168,12 +168,27 @@ body {
 }
 /*  Sketch */
 .sketch-board__sketch {
-    width: var(--width--sketch);
+    width: 80%;
     height: 80%;
     background-color: rgb(var(--c--bg));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+.sketch__box-ctr {
+    min-width: 100%;
+    min-height: 100%;
+    display: grid;
 }
 .sketch__box {
-    
+    border: none;
+}
+.sketch__box.border {
+    border: 0.5px solid rgb(var(--c--text));
+}
+.sketch__box-ctr.black .sketch__box.border{
+    border: 0.5px solid rgb(var(--c--bg));
 }
 /*  Sketch Option */
 .sketch-board__option {
