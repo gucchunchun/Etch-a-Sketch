@@ -94,20 +94,36 @@ body {
 }
 .sketch-board {
     --width--sketch: 80%;
-    width: 80%;
+    width: 100%;
     max-height: 100%;
     aspect-ratio: 4/3;
-    padding: 2.5% 5%;
     background-color: rgb(var(--c--main));
+    mask: url("img/sketch-shape.svg");
+    -webkit-mask: url("img/sketch-shape.svg");
+    mask-position: center;
+    -webkit-mask-position: center;
+    mask-size: contain;
+    -webkit-mask-size: contain;
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
     display: flex;
-    flex-wrap: wrap;
+    justify-content: center;
     align-items: center;
+
 }
 .sketch-board__frame {
-    width: 100%;
-    height: 100%;
-    padding: 2%;
+    height: 85%;
+    aspect-ratio: 4/3;
+    padding: 5%;
     background-color: rgb(var(--c--secondary));
+    mask: url("img/sketch-shape.svg");
+    -webkit-mask: url("img/sketch-shape2.svg");
+    mask-position: center;
+    -webkit-mask-position: center;
+    mask-size: contain;
+    -webkit-mask-size: contain;
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -156,6 +172,9 @@ body {
     height: 80%;
     background-color: rgb(var(--c--bg));
 }
+.sketch__box {
+    
+}
 /*  Sketch Option */
 .sketch-board__option {
     width: calc((100% - var(--width--sketch)) / 2);
@@ -170,3 +189,44 @@ body {
 .eraser {
     width: var(--width--sketch);
 }
+input[type="range"].eraser {
+    --slider--height: 2.5vw;
+    position: relative;
+    background-color: transparent;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+input[type="range"].eraser::-webkit-slider-runnable-track {
+    height: var(--slider--height);
+    border-radius: var(--slider--height);
+    background-color: rgb(var(--c--text));
+}
+/* firefox */
+input[type="range"].eraser::-moz-range-track {
+    height: var(--slider--height);
+    border-radius: var(--slider--height);
+    background-color: rgb(var(--c--text));
+}
+input[type="range"].eraser::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    position: relative;
+    transform: translateX(-50%);
+    width: 10%;
+    height: calc(var(--slider--height) * 2);
+    margin-top: calc(var(--slider--height) / -2);
+    border: 2px solid rgb(var(--c--text));
+    border-radius: 5px;
+    background-color: rgb(var(--c--secondary));
+    /* box-shadow: inset 5px 10px rgb(var(--c--text)); */
+}
+input[type="range"].eraser::-moz-range-thumb {
+    -moz-appearance: none;
+    position: relative;
+    width: 10%;
+    height: calc(var(--slider--height) * 2);
+    margin-top: calc(var(--slider--height) / -2);
+    border: 2px solid rgb(var(--c--text));
+    border-radius: 5px;
+    background-color: rgb(var(--c--secondary));
+}
+
