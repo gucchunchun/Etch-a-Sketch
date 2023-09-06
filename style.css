@@ -230,7 +230,6 @@ input[type="range"].eraser::-moz-range-track {
 input[type="range"].eraser::-webkit-slider-thumb {
     -webkit-appearance: none;
     position: relative;
-    transform: translateX(-50%);
     width: 10%;
     height: calc(var(--slider--height) * 2);
     margin-top: calc(var(--slider--height) / -2);
