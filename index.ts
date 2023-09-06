@@ -97,13 +97,14 @@ enum BoxWidth {
 class Sketch {
     private _boxes:Box[][] = [];
     constructor(
+        private _container: HTMLElement,
         private _self: HTMLElement,
         private _boxWidth: BoxWidth = BoxWidth.Medium
     ) {}
 
     initBoxes() {
-        const sketchWidth = this._self.clientWidth;
-        const sketchHeight = this._self.clientHeight;
+        const sketchWidth = this._container.clientWidth;
+        const sketchHeight = this._container.clientHeight;
         const row = Math.ceil(sketchWidth / this._boxWidth);
         const col = Math.ceil(sketchHeight / this._boxWidth);   
         this._self.style.gridTemplateColumns
@@ -132,6 +133,7 @@ class Sketch {
                 }
             }
         }
+        this._boxes =[];
     }
 
     updateAllBoxColor(newColor: Color) {
@@ -152,11 +154,12 @@ class Sketch {
 }
 
 const sketchDiv = document.querySelector('#sketch') as HTMLElement;
-if(!sketchDiv) {
+const sketchBoxCtr = document.querySelector('#box-ctr') as HTMLElement;
+if(!sketchBoxCtr) {
     throw new Error('div for sketch is not found');
 }
 //initialize sketch
-const sketch = new Sketch(sketchDiv);
+const sketch = new Sketch(sketchDiv,sketchBoxCtr);
 sketch.initBoxes();
 
 function boxReinitialize() {

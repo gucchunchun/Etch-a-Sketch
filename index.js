@@ -81,14 +81,15 @@ var BoxWidth;
     BoxWidth[BoxWidth["Large"] = 24] = "Large";
 })(BoxWidth || (BoxWidth = {}));
 class Sketch {
-    constructor(_self, _boxWidth = BoxWidth.Medium) {
+    constructor(_container, _self, _boxWidth = BoxWidth.Medium) {
+        this._container = _container;
         this._self = _self;
         this._boxWidth = _boxWidth;
         this._boxes = [];
     }
     initBoxes() {
-        const sketchWidth = this._self.clientWidth;
-        const sketchHeight = this._self.clientHeight;
+        const sketchWidth = this._container.clientWidth;
+        const sketchHeight = this._container.clientHeight;
         const row = Math.ceil(sketchWidth / this._boxWidth);
         const col = Math.ceil(sketchHeight / this._boxWidth);
         this._self.style.gridTemplateColumns
@@ -116,6 +117,7 @@ class Sketch {
                 }
             }
         }
+        this._boxes = [];
     }
     updateAllBoxColor(newColor) {
         for (let i = 0; i < this._boxes.length; i++) {
@@ -132,11 +134,12 @@ class Sketch {
     }
 }
 const sketchDiv = document.querySelector('#sketch');
-if (!sketchDiv) {
+const sketchBoxCtr = document.querySelector('#box-ctr');
+if (!sketchBoxCtr) {
     throw new Error('div for sketch is not found');
 }
 //initialize sketch
-const sketch = new Sketch(sketchDiv);
+const sketch = new Sketch(sketchDiv, sketchBoxCtr);
 sketch.initBoxes();
 function boxReinitialize() {
     sketch.deleteAllBox();
