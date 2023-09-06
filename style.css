@@ -94,6 +94,7 @@ body {
 }
 .sketch-board {
     --width--sketch: 80%;
+    --width--height: 80%;
     width: 100%;
     max-height: 100%;
     aspect-ratio: 4/3;
@@ -114,7 +115,7 @@ body {
 .sketch-board__frame {
     height: 85%;
     aspect-ratio: 4/3;
-    padding: 5%;
+    padding: 2.5%;
     background-color: rgb(var(--c--secondary));
     mask: url("img/sketch-shape.svg");
     -webkit-mask: url("img/sketch-shape2.svg");
@@ -169,8 +170,8 @@ body {
 /*  Sketch */
 .sketch-board__sketch {
     position: relative;
-    width: 80%;
-    height: 80%;
+    width: var(--width--sketch);
+    height: var(--width--height);
     background-color: rgb(var(--c--bg));
     overflow: hidden;
 }
@@ -213,14 +214,16 @@ input[type="range"].eraser {
     -webkit-appearance: none;
     -moz-appearance: none;
 }
+/* firefox */
 input[type="range"].eraser::-webkit-slider-runnable-track {
     height: var(--slider--height);
+    max-height: 24px;
     border-radius: var(--slider--height);
     background-color: rgb(var(--c--text));
 }
-/* firefox */
 input[type="range"].eraser::-moz-range-track {
     height: var(--slider--height);
+    max-height: 24px;
     border-radius: var(--slider--height);
     background-color: rgb(var(--c--text));
 }

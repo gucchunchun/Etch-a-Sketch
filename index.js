@@ -12,13 +12,21 @@ const defaultColor = {
     [ColorOption.Blue]: 255,
     [ColorOption.Alfa]: 1,
 };
+const defaultNextColor = {
+    [ColorOption.Red]: 0,
+    [ColorOption.Green]: 0,
+    [ColorOption.Blue]: 0,
+    [ColorOption.Alfa]: 1,
+};
 class Box {
-    constructor(_sketch, _width, _color = JSON.parse(JSON.stringify(defaultColor)), _classList = []) {
+    constructor(_sketch, _width, _color = JSON.parse(JSON.stringify(defaultColor)), _nextColor = JSON.parse(JSON.stringify(defaultNextColor)), _classList = []) {
         this._sketch = _sketch;
         this._width = _width;
         this._color = _color;
+        this._nextColor = _nextColor;
         this._classList = _classList;
         this.self = undefined;
+        this.colored = this.colored.bind(this);
     }
     add(insertBeforeElement = undefined) {
         let self = document.createElement('div');
@@ -31,9 +39,6 @@ class Box {
         self.style.width = this._width + 'px';
         self.style.height = this._width + 'px';
         self.style.backgroundColor = `rgba(${this._color[ColorOption.Red]}, ${this._color[ColorOption.Green]},${this._color[ColorOption.Blue]},${this._color[ColorOption.Alfa]})`;
-        self.addEventListener('mousedown', () => {
-            //some function to change color with specified color
-        });
         if (insertBeforeElement) {
             this._sketch.insertBefore(self, insertBeforeElement);
         }
@@ -73,6 +78,15 @@ class Box {
             }
         }
     }
+    colored() {
+        let box = this.self;
+        if (!box) {
+            throw new Error('Target box element can not be found');
+        }
+        else {
+            box.style.backgroundColor = `rgba(${this._nextColor[ColorOption.Red]}, ${this._nextColor[ColorOption.Green]},${this._nextColor[ColorOption.Blue]},${this._nextColor[ColorOption.Alfa]})`;
+        }
+    }
 }
 var BoxWidth;
 (function (BoxWidth) {
@@ -81,11 +95,14 @@ var BoxWidth;
     BoxWidth[BoxWidth["Large"] = 24] = "Large";
 })(BoxWidth || (BoxWidth = {}));
 class Sketch {
-    constructor(_container, _self, _boxWidth = BoxWidth.Medium) {
+    constructor(_container, _self, _boxWidth = BoxWidth.Medium, _nextColor = JSON.parse(JSON.stringify(defaultNextColor))) {
         this._container = _container;
         this._self = _self;
         this._boxWidth = _boxWidth;
+        this._nextColor = _nextColor;
         this._boxes = [];
+        this.sketchStart = this.sketchStart.bind(this);
+        this.sketchStop = this.sketchStop.bind(this);
     }
     initBoxes() {
         const sketchWidth = this._container.clientWidth;
@@ -99,11 +116,12 @@ class Sketch {
         for (let i = 0; i < row; i++) {
             this._boxes.push([]);
             for (let j = 0; j < col; j++) {
-                const box = new Box(this._self, this._boxWidth, undefined, ['border']);
+                const box = new Box(this._self, this._boxWidth, undefined, undefined, ['border']);
                 box.add();
                 this._boxes[i].push(box);
             }
         }
+        this._self.addEventListener('mousedown', this.sketchStart);
     }
     deleteAllBox() {
         for (let i = 0; i < this._boxes.length; i++) {
@@ -131,6 +149,36 @@ class Sketch {
         //add sa
         this.deleteAllBox();
         this.initBoxes();
+    }
+    sketchStart() {
+        console.log(this._boxes);
+        for (let i = 0; i < this._boxes.length; i++) {
+            for (let j = 0; j < this._boxes[i].length; j++) {
+                let box = this._boxes[i][j];
+                if (!box.self) {
+                    throw new Error(`box position ${i - j} is not found`);
+                }
+                else {
+                    box.self.addEventListener("mouseenter", box.colored);
+                }
+            }
+        }
+        this._self.addEventListener('mouseup', this.sketchStop);
+    }
+    sketchStop() {
+        for (let i = 0; i < this._boxes.length; i++) {
+            for (let j = 0; j < this._boxes[i].length; j++) {
+                let box = this._boxes[i][j];
+                if (!box.self) {
+                    box;
+                    throw new Error(`box position ${i - j} is not found`);
+                }
+                else {
+                    box.self.removeEventListener("mouseenter", box.colored);
+                }
+            }
+        }
+        this._self.removeEventListener('mouseup', this.sketchStop);
     }
 }
 const sketchDiv = document.querySelector('#sketch');

@@ -17,6 +17,12 @@ const defaultColor: Color = {
     [ColorOption.Blue]:255,
     [ColorOption.Alfa]: 1,
 }
+const defaultNextColor: Color = {
+    [ColorOption.Red]:0,
+    [ColorOption.Green]:0,
+    [ColorOption.Blue]:0,
+    [ColorOption.Alfa]: 1,
+};
 interface BoxFeature {
     sketch: HTMLElement,
     width: number,
@@ -31,8 +37,11 @@ class Box {
         private _sketch: HTMLElement,
         private _width: number,
         private _color: Color = JSON.parse(JSON.stringify(defaultColor)),
+        private _nextColor:Color = JSON.parse(JSON.stringify(defaultNextColor)),
         private _classList: string[] = []
-    ) {}
+    ) {
+        this.colored = this.colored.bind(this);
+    }
 
     add(insertBeforeElement: (HTMLElement|undefined)=undefined): void {
         let self = document.createElement('div');
@@ -45,9 +54,6 @@ class Box {
         self.style.width = this._width + 'px';
         self.style.height = this._width + 'px';
         self.style.backgroundColor = `rgba(${this._color[ColorOption.Red]}, ${this._color[ColorOption.Green]},${this._color[ColorOption.Blue]},${this._color[ColorOption.Alfa]})`;
-        self.addEventListener('mousedown', () =>{
-            //some function to change color with specified color
-        });
         if(insertBeforeElement) {
             this._sketch.insertBefore(self, insertBeforeElement);
         }else {
@@ -88,6 +94,14 @@ class Box {
             }
         }
     }
+    colored() {
+        let box = this.self
+        if(!box) {
+            throw new Error('Target box element can not be found')
+        }else {
+            box.style.backgroundColor = `rgba(${this._nextColor[ColorOption.Red]}, ${this._nextColor[ColorOption.Green]},${this._nextColor[ColorOption.Blue]},${this._nextColor[ColorOption.Alfa]})`;
+        }
+    }
 }
 enum BoxWidth {
     Small = 8,
@@ -99,8 +113,12 @@ class Sketch {
     constructor(
         private _container: HTMLElement,
         private _self: HTMLElement,
-        private _boxWidth: BoxWidth = BoxWidth.Medium
-    ) {}
+        private _boxWidth: BoxWidth = BoxWidth.Medium,
+        private _nextColor: Color = JSON.parse(JSON.stringify(defaultNextColor)),
+    ) {
+        this.sketchStart = this.sketchStart.bind(this);
+        this.sketchStop = this.sketchStop.bind(this);
+    }
 
     initBoxes() {
         const sketchWidth = this._container.clientWidth;
@@ -115,11 +133,12 @@ class Sketch {
         for (let i = 0; i < row ; i++) {
             this._boxes.push([]);
             for (let j = 0; j < col; j++) {
-                const box = new Box(this._self, this._boxWidth, undefined, ['border']);
+                const box = new Box(this._self, this._boxWidth, undefined, undefined, ['border']);
                 box.add();
                 this._boxes[i].push(box);
             }
         }  
+        this._self.addEventListener('mousedown', this.sketchStart);
     }
 
     deleteAllBox() {
@@ -151,6 +170,35 @@ class Sketch {
         this.initBoxes();
     }
 
+    sketchStart() {
+        console.log(this._boxes)
+        for(let i = 0; i < this._boxes.length; i++) {
+            for(let j = 0; j < this._boxes[i].length; j++){
+                let box = this._boxes[i][j];
+                if(!box.self) {
+                    throw new Error(`box position ${i-j} is not found`);
+                }else {
+                    box.self.addEventListener("mouseenter", box.colored);
+                }
+            }
+        }
+        this._self.addEventListener('mouseup', this.sketchStop);
+    }
+
+    sketchStop() {
+        for(let i = 0; i < this._boxes.length; i++) {
+            for(let j = 0; j < this._boxes[i].length; j++){
+                let box = this._boxes[i][j];
+                if(!box.self) {
+                    box
+                    throw new Error(`box position ${i-j} is not found`);
+                }else {
+                    box.self.removeEventListener("mouseenter", box.colored);
+                }
+            }
+        }
+        this._self.removeEventListener('mouseup', this.sketchStop);
+    }
 }
 
 const sketchDiv = document.querySelector('#sketch') as HTMLElement;
