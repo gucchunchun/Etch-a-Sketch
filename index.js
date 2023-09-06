@@ -138,8 +138,9 @@ if (!sketchDiv) {
 //initialize sketch
 const sketch = new Sketch(sketchDiv);
 sketch.initBoxes();
-window.addEventListener('resize', () => {
+function boxReinitialize() {
     sketch.deleteAllBox();
     sketch.initBoxes();
-});
+}
+window.addEventListener('resize', boxReinitialize);
 //# sourceMappingURL=index.js.map

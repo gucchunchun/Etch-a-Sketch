@@ -159,9 +159,11 @@ if(!sketchDiv) {
 const sketch = new Sketch(sketchDiv);
 sketch.initBoxes();
 
-window.addEventListener('resize', () => {
+function boxReinitialize() {
     sketch.deleteAllBox();
     sketch.initBoxes();
-});
+}
+
+window.addEventListener('resize', boxReinitialize);
 
 
