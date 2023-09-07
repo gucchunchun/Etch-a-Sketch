@@ -193,9 +193,13 @@ body {
 .sketch__box-ctr.black .sketch__box.border{
     border: 0.5px solid rgb(var(--c--bg));
 }
-/*  Sketch Option */
-.sketch-board__option {
+/*  Sketch Control */
+.sketch-board__control {
     width: calc((100% - var(--width--sketch)) / 2);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
 }
 /*  Sketch Eraser */
 .sketch-board__eraser {
