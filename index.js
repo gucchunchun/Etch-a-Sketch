@@ -156,7 +156,6 @@ class Sketch {
         this.initBoxes();
     }
     sketchStart() {
-        console.log(this._boxes);
         for (let i = 0; i < this._boxes.length; i++) {
             for (let j = 0; j < this._boxes[i].length; j++) {
                 let box = this._boxes[i][j];
@@ -205,6 +204,15 @@ eraser === null || eraser === void 0 ? void 0 : eraser.addEventListener('input',
         const input = e.target;
         const percents = parseInt(input.value);
         sketch.updateBoxColor(undefined, percents, true);
+    }
+});
+eraser === null || eraser === void 0 ? void 0 : eraser.addEventListener('mouseup', (e) => {
+    if (!e.target) {
+        throw new Error(`${e}'s target can not be found`);
+    }
+    else {
+        const input = e.target;
+        input.value = "0";
     }
 });
 //# sourceMappingURL=index.js.map
