@@ -19,11 +19,11 @@ const defaultNextColor = {
     [ColorOption.Alfa]: 1,
 };
 class Box {
-    constructor(_sketch, _width, _bgColor = JSON.parse(JSON.stringify(defaultBgColor)), _nextColor = JSON.parse(JSON.stringify(defaultNextColor)), _classList = []) {
+    constructor(_sketch, _width, bgColor = JSON.parse(JSON.stringify(defaultBgColor)), nextColor = JSON.parse(JSON.stringify(defaultNextColor)), _classList = []) {
         this._sketch = _sketch;
         this._width = _width;
-        this._bgColor = _bgColor;
-        this._nextColor = _nextColor;
+        this.bgColor = bgColor;
+        this.nextColor = nextColor;
         this._classList = _classList;
         this.self = undefined;
         this.colored = this.colored.bind(this);
@@ -38,7 +38,7 @@ class Box {
         }
         self.style.width = this._width + 'px';
         self.style.height = this._width + 'px';
-        self.style.backgroundColor = `rgba(${this._bgColor[ColorOption.Red]}, ${this._bgColor[ColorOption.Green]},${this._bgColor[ColorOption.Blue]},${this._bgColor[ColorOption.Alfa]})`;
+        self.style.backgroundColor = `rgba(${this.bgColor[ColorOption.Red]}, ${this.bgColor[ColorOption.Green]},${this.bgColor[ColorOption.Blue]},${this.bgColor[ColorOption.Alfa]})`;
         if (insertBeforeElement) {
             this._sketch.insertBefore(self, insertBeforeElement);
         }
@@ -58,8 +58,8 @@ class Box {
         }
         // color is more primary than getting random color with colorOptions
         if (updateFeature.color) {
-            this._bgColor = updateFeature.color;
-            box.style.backgroundColor = `rgba(${this._bgColor[ColorOption.Red]}, ${this._bgColor[ColorOption.Green]},${this._bgColor[ColorOption.Blue]},${this._bgColor[ColorOption.Alfa]})`;
+            this.bgColor = updateFeature.color;
+            box.style.backgroundColor = `rgba(${this.bgColor[ColorOption.Red]}, ${this.bgColor[ColorOption.Green]},${this.bgColor[ColorOption.Blue]},${this.bgColor[ColorOption.Alfa]})`;
         }
         if (updateFeature.classList) {
             this._classList = updateFeature.classList;
@@ -84,7 +84,7 @@ class Box {
             throw new Error('Target box element can not be found');
         }
         else {
-            box.style.backgroundColor = `rgba(${this._nextColor[ColorOption.Red]}, ${this._nextColor[ColorOption.Green]},${this._nextColor[ColorOption.Blue]},${this._nextColor[ColorOption.Alfa]})`;
+            box.style.backgroundColor = `rgba(${this.nextColor[ColorOption.Red]}, ${this.nextColor[ColorOption.Green]},${this.nextColor[ColorOption.Blue]},${this.nextColor[ColorOption.Alfa]})`;
         }
     }
 }
@@ -138,10 +138,11 @@ class Sketch {
         }
         this._boxes = [];
     }
-    updateBoxColor(newColor = this._nextColor, percents = 100, eraser = false) {
+    updateBoxColor(nextColor = this._nextColor, percents = 100, eraser = false) {
         const row = this._boxes.length;
         let col = this._boxes[0].length;
-        const color = eraser ? this._bgColor : newColor;
+        this._nextColor = nextColor;
+        const color = eraser ? this._bgColor : nextColor;
         col = Math.round(col * percents / 100);
         for (let i = 0; i < row; i++) {
             for (let j = 0; j < col; j++) {
@@ -184,10 +185,32 @@ class Sketch {
         }
         this._self.removeEventListener('mouseup', this.sketchStop);
     }
+    changeBgColor(bgColor) {
+        this._bgColor = bgColor;
+        for (let i = 0; i < this._boxes.length; i++) {
+            for (let j = 0; j < this._boxes[i].length; j++) {
+                const box = this._boxes[i][j];
+                box.nextColor = bgColor;
+            }
+        }
+        this.updateBoxColor(this._bgColor);
+    }
+    changeNextColor(nextColor) {
+        this._nextColor = nextColor;
+        for (let i = 0; i < this._boxes.length; i++) {
+            for (let j = 0; j < this._boxes[i].length; j++) {
+                const box = this._boxes[i][j];
+                box.nextColor = nextColor;
+            }
+        }
+    }
 }
 const sketchDiv = document.querySelector('#sketch');
 const sketchBoxCtr = document.querySelector('#box-ctr');
 const eraser = document.querySelector('#eraser');
+const penColor = document.querySelector('#color--pen');
+const bgColor = document.querySelector('#color--bg');
+const size = document.querySelector('#size');
 //initialize sketch
 const sketch = new Sketch(sketchDiv, sketchBoxCtr);
 sketch.initBoxes();
@@ -213,6 +236,63 @@ eraser === null || eraser === void 0 ? void 0 : eraser.addEventListener('mouseup
     else {
         const input = e.target;
         input.value = "0";
+    }
+});
+//need change
+penColor === null || penColor === void 0 ? void 0 : penColor.addEventListener('input', (e) => {
+    if (!e.target) {
+        throw new Error(`${e}'s target can not be found`);
+    }
+    else {
+        const input = e.target;
+        // value = #FFFFFF hex
+        //find method
+        const color = {
+            [ColorOption.Red]: Number(input.value.replace('#', '').slice(0, 2)),
+            [ColorOption.Green]: parseInt(input.value.replace('#', '').slice(2, 4)),
+            [ColorOption.Blue]: parseInt(input.value.replace('#', '').slice(4)),
+            [ColorOption.Alfa]: 1,
+        };
+        console.log(color);
+        sketch.changeNextColor(color);
+    }
+});
+bgColor === null || bgColor === void 0 ? void 0 : bgColor.addEventListener('input', (e) => {
+    if (!e.target) {
+        throw new Error(`${e}'s target can not be found`);
+    }
+    else {
+        const input = e.target;
+        // value = #FFFFFF hex
+        //find method
+        const color = {
+            [ColorOption.Red]: Number(input.value.replace('#', '').slice(0, 2)),
+            [ColorOption.Green]: parseInt(input.value.replace('#', '').slice(2, 4)),
+            [ColorOption.Blue]: parseInt(input.value.replace('#', '').slice(4)),
+            [ColorOption.Alfa]: 1,
+        };
+        console.log(color);
+        sketch.changeBgColor(color);
+    }
+});
+size === null || size === void 0 ? void 0 : size.addEventListener('change', (e) => {
+    if (!e.target) {
+        throw new Error(`${e}'s target can not be found`);
+    }
+    else {
+        const input = e.target;
+        let size;
+        switch (input.value) {
+            case 's':
+                sketch.updateBoxWidth(BoxWidth.Small);
+                return;
+            case 'm':
+                sketch.updateBoxWidth(BoxWidth.Medium);
+                return;
+            case 'l':
+                sketch.updateBoxWidth(BoxWidth.Large);
+                return;
+        }
     }
 });
 //# sourceMappingURL=index.js.map

@@ -36,8 +36,8 @@ class Box {
     constructor(
         private _sketch: HTMLElement,
         private _width: number,
-        private _bgColor: Color = JSON.parse(JSON.stringify(defaultBgColor)),
-        private _nextColor: Color = JSON.parse(JSON.stringify(defaultNextColor)),
+        public bgColor: Color = JSON.parse(JSON.stringify(defaultBgColor)),
+        public nextColor: Color = JSON.parse(JSON.stringify(defaultNextColor)),
         private _classList: string[] = []
     ) {
         this.colored = this.colored.bind(this);
@@ -53,7 +53,7 @@ class Box {
         }
         self.style.width = this._width + 'px';
         self.style.height = this._width + 'px';
-        self.style.backgroundColor = `rgba(${this._bgColor[ColorOption.Red]}, ${this._bgColor[ColorOption.Green]},${this._bgColor[ColorOption.Blue]},${this._bgColor[ColorOption.Alfa]})`;
+        self.style.backgroundColor = `rgba(${this.bgColor[ColorOption.Red]}, ${this.bgColor[ColorOption.Green]},${this.bgColor[ColorOption.Blue]},${this.bgColor[ColorOption.Alfa]})`;
         if(insertBeforeElement) {
             this._sketch.insertBefore(self, insertBeforeElement);
         }else {
@@ -72,8 +72,8 @@ class Box {
         }
         // color is more primary than getting random color with colorOptions
         if(updateFeature.color) {
-            this._bgColor = updateFeature.color;
-            box.style.backgroundColor = `rgba(${this._bgColor[ColorOption.Red]}, ${this._bgColor[ColorOption.Green]},${this._bgColor[ColorOption.Blue]},${this._bgColor[ColorOption.Alfa]})`;
+            this.bgColor = updateFeature.color;
+            box.style.backgroundColor = `rgba(${this.bgColor[ColorOption.Red]}, ${this.bgColor[ColorOption.Green]},${this.bgColor[ColorOption.Blue]},${this.bgColor[ColorOption.Alfa]})`;
         }   
         if(updateFeature.classList) {
             this._classList = updateFeature.classList;
@@ -99,7 +99,7 @@ class Box {
         if(!box) {
             throw new Error('Target box element can not be found')
         }else {
-            box.style.backgroundColor = `rgba(${this._nextColor[ColorOption.Red]}, ${this._nextColor[ColorOption.Green]},${this._nextColor[ColorOption.Blue]},${this._nextColor[ColorOption.Alfa]})`;
+            box.style.backgroundColor = `rgba(${this.nextColor[ColorOption.Red]}, ${this.nextColor[ColorOption.Green]},${this.nextColor[ColorOption.Blue]},${this.nextColor[ColorOption.Alfa]})`;
         }
     }
 }
@@ -156,10 +156,11 @@ class Sketch {
         this._boxes =[];
     }
 
-    updateBoxColor(newColor: Color=this._nextColor, percents: number=100, eraser: boolean=false) {
+    updateBoxColor(nextColor: Color=this._nextColor, percents: number=100, eraser: boolean=false) {
         const  row = this._boxes.length;
         let col = this._boxes[0].length;
-        const color = eraser ? this._bgColor : newColor;
+        this._nextColor = nextColor;
+        const color = eraser ? this._bgColor : nextColor;
         col = Math.round(col * percents / 100);
         for(let i = 0; i < row; i++) {
             for(let j = 0; j < col; j++){
@@ -203,11 +204,36 @@ class Sketch {
         }
         this._self.removeEventListener('mouseup', this.sketchStop);
     }
+
+    changeBgColor(bgColor: Color) {
+        this._bgColor = bgColor;
+        for(let i = 0; i < this._boxes.length; i++) {
+            for(let j = 0; j < this._boxes[i].length; j++){
+                const box = this._boxes[i][j];
+                box.nextColor = bgColor;
+            }
+        }
+        this.updateBoxColor(this._bgColor);
+    }
+
+    changeNextColor(nextColor: Color) {
+        this._nextColor = nextColor;
+        for(let i = 0; i < this._boxes.length; i++) {
+            for(let j = 0; j < this._boxes[i].length; j++){
+                const box = this._boxes[i][j];
+                box.nextColor = nextColor;
+            }
+        }
+    }
 }
+
 
 const sketchDiv = document.querySelector('#sketch');
 const sketchBoxCtr = document.querySelector('#box-ctr');
 const eraser = document.querySelector('#eraser');
+const penColor = document.querySelector('#color--pen');
+const bgColor = document.querySelector('#color--bg');
+const size = document.querySelector('#size');
 
 //initialize sketch
 const sketch = new Sketch((sketchDiv as HTMLElement),(sketchBoxCtr as HTMLElement));
@@ -236,3 +262,58 @@ eraser?.addEventListener('mouseup', (e)=>{
         input.value="0";
     }
 });
+
+//need change
+penColor?.addEventListener('input', (e)=>{
+    if(!e.target) {
+        throw new Error(`${e}'s target can not be found`);
+    }else {
+        const input = e.target as HTMLInputElement;
+        // value = #FFFFFF hex
+        //find method
+        const color:Color = {
+            [ColorOption.Red]: Number(input.value.replace('#', '').slice(0,2)),
+            [ColorOption.Green]: parseInt(input.value.replace('#', '').slice(2,4)),
+            [ColorOption.Blue]: parseInt(input.value.replace('#', '').slice(4)),
+            [ColorOption.Alfa]: 1,
+        };
+        console.log(color);
+        sketch.changeNextColor(color);
+    }
+})
+bgColor?.addEventListener('input', (e)=>{
+    if(!e.target) {
+        throw new Error(`${e}'s target can not be found`);
+    }else {
+        const input = e.target as HTMLInputElement;
+        // value = #FFFFFF hex
+        //find method
+        const color:Color = {
+            [ColorOption.Red]: Number(input.value.replace('#', '').slice(0,2)),
+            [ColorOption.Green]: parseInt(input.value.replace('#', '').slice(2,4)),
+            [ColorOption.Blue]: parseInt(input.value.replace('#', '').slice(4)),
+            [ColorOption.Alfa]: 1,
+        };
+        console.log(color);
+        sketch.changeBgColor(color);
+    }
+})
+size?.addEventListener('change', (e)=>{
+    if(!e.target) {
+        throw new Error(`${e}'s target can not be found`);
+    }else {
+        const input = e.target as HTMLSelectElement;
+        let size:BoxWidth;
+        switch(input.value) {
+            case 's':
+                sketch.updateBoxWidth(BoxWidth.Small);
+                return
+            case 'm':
+                sketch.updateBoxWidth(BoxWidth.Medium);
+                return
+            case 'l':
+                sketch.updateBoxWidth(BoxWidth.Large);
+                return
+        }
+    }
+})

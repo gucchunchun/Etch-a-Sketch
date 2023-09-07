@@ -39,7 +39,25 @@
           <div id="sketch" class="sketch-board__sketch">
             <div id="box-ctr" class="sketch__box-ctr"></div>
           </div>
-          <div class="sketch-board__control"></div>
+          <div class="sketch-board__control">
+            <input
+              type="color"
+              id="color--pen"
+              class="control__color"
+              value="#000000"
+            />
+            <input
+              type="color"
+              id="color--bg"
+              class="control__color"
+              value="#FFFFFF"
+            />
+            <select id="size">
+              <option for="size" value="s">small</option>
+              <option for="size" value="m" selected>medium</option>
+              <option for="size" value="l">large</option>
+            </select>
+          </div>
           <div class="sketch-board__eraser">
             <input
               type="range"

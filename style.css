@@ -188,7 +188,7 @@ body {
     border: none;
 }
 .sketch__box.border {
-    border: 0.5px solid rgb(var(--c--text));
+    border: 0.5px solid rgba(var(--c--text), 0.5);
 }
 .sketch__box-ctr.black .sketch__box.border{
     border: 0.5px solid rgb(var(--c--bg));
@@ -218,14 +218,7 @@ input[type="range"].eraser {
     -webkit-appearance: none;
     -moz-appearance: none;
 }
-/* firefox */
 input[type="range"].eraser::-webkit-slider-runnable-track {
-    height: var(--slider--height);
-    max-height: 24px;
-    border-radius: var(--slider--height);
-    background-color: rgb(var(--c--text));
-}
-input[type="range"].eraser::-moz-range-track {
     height: var(--slider--height);
     max-height: 24px;
     border-radius: var(--slider--height);
@@ -241,6 +234,13 @@ input[type="range"].eraser::-webkit-slider-thumb {
     border-radius: 5px;
     background-color: rgb(var(--c--secondary));
     /* box-shadow: inset 5px 10px rgb(var(--c--text)); */
+}
+/* firefox */
+input[type="range"].eraser::-moz-range-track {
+    height: var(--slider--height);
+    max-height: 24px;
+    border-radius: var(--slider--height);
+    background-color: rgb(var(--c--text));
 }
 input[type="range"].eraser::-moz-range-thumb {
     -moz-appearance: none;
