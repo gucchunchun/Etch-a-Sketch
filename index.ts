@@ -11,7 +11,7 @@ type Color = {
     [ColorOption.Blue]:number,
     [ColorOption.Alfa]:number,
 }
-const defaultColor: Color = {
+const defaultBgColor: Color = {
     [ColorOption.Red]:255,
     [ColorOption.Green]:255,
     [ColorOption.Blue]:255,
@@ -36,8 +36,8 @@ class Box {
     constructor(
         private _sketch: HTMLElement,
         private _width: number,
-        private _color: Color = JSON.parse(JSON.stringify(defaultColor)),
-        private _nextColor:Color = JSON.parse(JSON.stringify(defaultNextColor)),
+        private _bgColor: Color = JSON.parse(JSON.stringify(defaultBgColor)),
+        private _nextColor: Color = JSON.parse(JSON.stringify(defaultNextColor)),
         private _classList: string[] = []
     ) {
         this.colored = this.colored.bind(this);
@@ -53,7 +53,7 @@ class Box {
         }
         self.style.width = this._width + 'px';
         self.style.height = this._width + 'px';
-        self.style.backgroundColor = `rgba(${this._color[ColorOption.Red]}, ${this._color[ColorOption.Green]},${this._color[ColorOption.Blue]},${this._color[ColorOption.Alfa]})`;
+        self.style.backgroundColor = `rgba(${this._bgColor[ColorOption.Red]}, ${this._bgColor[ColorOption.Green]},${this._bgColor[ColorOption.Blue]},${this._bgColor[ColorOption.Alfa]})`;
         if(insertBeforeElement) {
             this._sketch.insertBefore(self, insertBeforeElement);
         }else {
@@ -72,8 +72,8 @@ class Box {
         }
         // color is more primary than getting random color with colorOptions
         if(updateFeature.color) {
-            this._color = updateFeature.color;
-            box.style.backgroundColor = `rgba(${this._color[ColorOption.Red]}, ${this._color[ColorOption.Green]},${this._color[ColorOption.Blue]},${this._color[ColorOption.Alfa]})`;
+            this._bgColor = updateFeature.color;
+            box.style.backgroundColor = `rgba(${this._bgColor[ColorOption.Red]}, ${this._bgColor[ColorOption.Green]},${this._bgColor[ColorOption.Blue]},${this._bgColor[ColorOption.Alfa]})`;
         }   
         if(updateFeature.classList) {
             this._classList = updateFeature.classList;
@@ -114,6 +114,7 @@ class Sketch {
         private _container: HTMLElement,
         private _self: HTMLElement,
         private _boxWidth: BoxWidth = BoxWidth.Medium,
+        private _bgColor: Color = JSON.parse(JSON.stringify(defaultBgColor)),
         private _nextColor: Color = JSON.parse(JSON.stringify(defaultNextColor)),
     ) {
         this.sketchStart = this.sketchStart.bind(this);
@@ -123,17 +124,17 @@ class Sketch {
     initBoxes() {
         const sketchWidth = this._container.clientWidth;
         const sketchHeight = this._container.clientHeight;
-        const row = Math.ceil(sketchWidth / this._boxWidth);
-        const col = Math.ceil(sketchHeight / this._boxWidth);   
+        const col = Math.ceil(sketchWidth / this._boxWidth);
+        const row = Math.ceil(sketchHeight / this._boxWidth);   
         this._self.style.gridTemplateColumns
-            = `repeat(${row}, ${this._boxWidth}px)`;
-        this._self.style.gridTemplateRows
             = `repeat(${col}, ${this._boxWidth}px)`;
+        this._self.style.gridTemplateRows
+            = `repeat(${row}, ${this._boxWidth}px)`;
 
         for (let i = 0; i < row ; i++) {
             this._boxes.push([]);
             for (let j = 0; j < col; j++) {
-                const box = new Box(this._self, this._boxWidth, undefined, undefined, ['border']);
+                const box = new Box(this._self, this._boxWidth, this._bgColor, this._nextColor, ['border']);
                 box.add();
                 this._boxes[i].push(box);
             }
@@ -155,10 +156,14 @@ class Sketch {
         this._boxes =[];
     }
 
-    updateAllBoxColor(newColor: Color) {
-        for(let i = 0; i < this._boxes.length; i++) {
-            for(let j = 0; j < this._boxes[i].length; j++){
-                this._boxes[i][j].update({color:newColor});
+    updateBoxColor(newColor: Color=this._nextColor, percents: number=100, eraser: boolean=false) {
+        const  row = this._boxes.length;
+        let col = this._boxes[0].length;
+        const color = eraser ? this._bgColor : newColor;
+        col = Math.round(col * percents / 100);
+        for(let i = 0; i < row; i++) {
+            for(let j = 0; j < col; j++){
+                this._boxes[i][j].update({color: color});
             }
         }
     }
@@ -201,20 +206,27 @@ class Sketch {
     }
 }
 
-const sketchDiv = document.querySelector('#sketch') as HTMLElement;
-const sketchBoxCtr = document.querySelector('#box-ctr') as HTMLElement;
-if(!sketchBoxCtr) {
-    throw new Error('div for sketch is not found');
-}
+const sketchDiv = document.querySelector('#sketch');
+const sketchBoxCtr = document.querySelector('#box-ctr');
+const eraser = document.querySelector('#eraser');
+
 //initialize sketch
-const sketch = new Sketch(sketchDiv,sketchBoxCtr);
+const sketch = new Sketch((sketchDiv as HTMLElement),(sketchBoxCtr as HTMLElement));
 sketch.initBoxes();
 
 function boxReinitialize() {
     sketch.deleteAllBox();
     sketch.initBoxes();
 }
-
 window.addEventListener('resize', boxReinitialize);
 
-
+eraser?.addEventListener('input', (e)=>{
+    if(!e.target) {
+        throw new Error(`${e}'s target can not be found`);
+    }else {
+        const input = e.target as HTMLInputElement;
+        const percents = parseInt(input.value);
+        sketch.updateBoxColor(undefined, percents, true);
+    }
+    
+})
