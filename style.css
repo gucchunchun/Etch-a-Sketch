@@ -3,7 +3,7 @@
     --c--bg: 255, 255, 255; 
     --c--main: 120, 204, 203; /* #78CCCB */
     --c--secondary: 255, 237, 101; /* #FFED65 */
-    --c--tertiary: 218, 192, 163; /* DAC0A3 */
+    --c--tertiary: 255, 0, 0; 
     --c--text: 16, 44, 87; /* 102C57 */
     --c--stamp--circle: 106, 71, 166; /* #102C57 */
     --c--stamp--triangle: 120, 204, 203; /* #78CCCB */
@@ -201,6 +201,73 @@ body {
     justify-content: space-evenly;
     align-items: center;
 }
+.control__option {
+    width: 90%;
+    aspect-ratio: 1;
+}
+input[type="color"].option--color__input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: transparent;
+    display: block;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+.option--size__input {
+    display: none;
+}
+
+.option--size__switch {
+    position: relative;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 1px solid rgb(var(--c--text));
+    background-color: rgb(var(--c--secondary));
+}
+.option--size__switch::before {
+    content: "";
+    position: absolute;
+    transform: translateY(-50%) rotate(90deg);
+    top: 50%;
+    left: 50%;
+    transform-origin: center;
+    left: 50%;
+    width: 15%;
+    aspect-ratio: 2/3;
+    background-image: url("img/switch-arrow.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.switch__label {
+    --label--width: 10%;
+    position: absolute;
+    top: calc(var(--label--width) / 2);
+    right: calc(50% - var(--label--width) / 2);
+    width: var(--label--width);
+    aspect-ratio: 1;
+    border: 0.5px solid rgb(var(--c--text));
+    border-radius: 1px;
+}
+.switch__label.selected {
+    background-color: rgb(var(--c--main));
+}
+.switch__label.m {
+    --label--width: 15%;
+    top: calc(50% - var(--label--width) / 2);
+    right: calc(var(--label--width) *  2/6);
+}
+.switch__label.l {
+    --label--width: 20%;
+    top: calc(100% - var(--label--width) * 5/4);
+    right: calc(50% - var(--label--width) / 2);
+} 
+
+
 /*  Sketch Eraser */
 .sketch-board__eraser {
     position: relative;

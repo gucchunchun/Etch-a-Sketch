@@ -40,23 +40,39 @@
             <div id="box-ctr" class="sketch__box-ctr"></div>
           </div>
           <div class="sketch-board__control">
-            <input
-              type="color"
-              id="color--pen"
-              class="control__color"
-              value="#000000"
-            />
-            <input
-              type="color"
-              id="color--bg"
-              class="control__color"
-              value="#FFFFFF"
-            />
-            <select id="size">
-              <option for="size" value="s">small</option>
-              <option for="size" value="m" selected>medium</option>
-              <option for="size" value="l">large</option>
-            </select>
+            <div class="control__option control__option--color">
+              <input
+                type="color"
+                id="color--pen"
+                class="option--color__input"
+                value="#000000"
+              />
+            </div>
+            <!-- /.control__color -->
+
+            <div class="control__option control__option--color">
+              <input
+                type="color"
+                id="color--bg"
+                class="option--color__input"
+                value="#FFFFFF"
+              />
+            </div>
+            <!-- /.control__color -->
+
+            <div class="control__option control__option--size">
+              <select id="size" class="option--size__input">
+                <option for="size" value="s">small</option>
+                <option for="size" value="m" selected>medium</option>
+                <option for="size" value="l">large</option>
+              </select>
+              <div class="option--size__switch">
+                <div class="switch__label s"></div>
+                <div class="switch__label m selected"></div>
+                <div class="switch__label l"></div>
+              </div>
+            </div>
+            <!-- /.control__size -->
           </div>
           <div class="sketch-board__eraser">
             <input
