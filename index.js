@@ -211,6 +211,8 @@ const eraser = document.querySelector('#eraser');
 const penColor = document.querySelector('#color--pen');
 const bgColor = document.querySelector('#color--bg');
 const size = document.querySelector('#size');
+const sizeSwitch = document.querySelector('#switch-size');
+const sizeButtons = document.querySelectorAll('.switch__label');
 //initialize sketch
 const sketch = new Sketch(sketchDiv, sketchBoxCtr);
 sketch.initBoxes();
@@ -248,9 +250,9 @@ penColor === null || penColor === void 0 ? void 0 : penColor.addEventListener('i
         // value = #FFFFFF hex
         //find method
         const color = {
-            [ColorOption.Red]: Number(input.value.replace('#', '').slice(0, 2)),
-            [ColorOption.Green]: parseInt(input.value.replace('#', '').slice(2, 4)),
-            [ColorOption.Blue]: parseInt(input.value.replace('#', '').slice(4)),
+            [ColorOption.Red]: parseInt(input.value.replace('#', '').slice(0, 2), 16),
+            [ColorOption.Green]: parseInt(input.value.replace('#', '').slice(2, 4), 16),
+            [ColorOption.Blue]: parseInt(input.value.replace('#', '').slice(4), 16),
             [ColorOption.Alfa]: 1,
         };
         console.log(color);
@@ -266,33 +268,56 @@ bgColor === null || bgColor === void 0 ? void 0 : bgColor.addEventListener('inpu
         // value = #FFFFFF hex
         //find method
         const color = {
-            [ColorOption.Red]: Number(input.value.replace('#', '').slice(0, 2)),
-            [ColorOption.Green]: parseInt(input.value.replace('#', '').slice(2, 4)),
-            [ColorOption.Blue]: parseInt(input.value.replace('#', '').slice(4)),
+            [ColorOption.Red]: parseInt(input.value.replace('#', '').slice(0, 2), 16),
+            [ColorOption.Green]: parseInt(input.value.replace('#', '').slice(2, 4), 16),
+            [ColorOption.Blue]: parseInt(input.value.replace('#', '').slice(4), 16),
             [ColorOption.Alfa]: 1,
         };
         console.log(color);
         sketch.changeBgColor(color);
     }
 });
+function sizeChange(nextSize) {
+    switch (nextSize) {
+        case 's':
+            sketch.updateBoxWidth(BoxWidth.Small);
+            return;
+        case 'm':
+            sketch.updateBoxWidth(BoxWidth.Medium);
+            return;
+        case 'l':
+            sketch.updateBoxWidth(BoxWidth.Large);
+            return;
+    }
+}
 size === null || size === void 0 ? void 0 : size.addEventListener('change', (e) => {
     if (!e.target) {
         throw new Error(`${e}'s target can not be found`);
     }
     else {
         const input = e.target;
-        let size;
-        switch (input.value) {
-            case 's':
-                sketch.updateBoxWidth(BoxWidth.Small);
-                return;
-            case 'm':
-                sketch.updateBoxWidth(BoxWidth.Medium);
-                return;
-            case 'l':
-                sketch.updateBoxWidth(BoxWidth.Large);
-                return;
-        }
+        sizeChange(input.value);
     }
+});
+sizeButtons.forEach((button) => {
+    button.addEventListener('click', (e) => {
+        var _a;
+        e.preventDefault();
+        if (button.classList.contains('selected')) {
+            return;
+        }
+        const preSelected = (_a = button.parentElement) === null || _a === void 0 ? void 0 : _a.querySelector('.selected');
+        if (!preSelected) {
+            throw new Error('element with selected class not found');
+        }
+        preSelected.classList.remove('selected');
+        button.classList.add('selected');
+        const nextSize = button.id.replace('size--', '');
+        if (!size) {
+            throw new Error('element with size classset not found');
+        }
+        size.value = nextSize;
+        sizeChange(nextSize);
+    });
 });
 //# sourceMappingURL=index.js.map

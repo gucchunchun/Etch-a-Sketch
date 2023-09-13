@@ -229,9 +229,10 @@ input[type="color"].option--color__input {
     background-color: rgb(var(--c--secondary));
 }
 .option--size__switch::before {
+    --angle: 90deg;
     content: "";
     position: absolute;
-    transform: translateY(-50%) rotate(90deg);
+    transform: translateY(-50%) rotate(var(--angle));
     top: 50%;
     left: 50%;
     transform-origin: center;
@@ -243,6 +244,16 @@ input[type="color"].option--color__input {
     background-repeat: no-repeat;
     background-size: cover;
 }
+.option--size__switch.s {
+    --angle: 0deg;
+}
+.option--size__switch.m {
+    --angle: 90deg;
+}
+.option--size__switch.l {
+    --angle: 180deg;
+}
+
 .switch__label {
     --label--width: 10%;
     position: absolute;
