@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
+
 :root {
     color-scheme: normal;
     --c--bg: 255, 255, 255; 
@@ -73,6 +75,7 @@ body {
     flex-direction: column;
     overflow: hidden;
     color: rgb(var(--c--text));
+    font-family: 'Indie Flower', cursive;
 }
 .title {
     width: 100%;
